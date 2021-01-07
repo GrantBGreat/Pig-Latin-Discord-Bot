@@ -1,2 +1,1 @@
-# MadLibs Discord Bot
- 
+# Feud Discord Bot
