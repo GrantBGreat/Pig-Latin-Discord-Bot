@@ -115,6 +115,13 @@ async def save(ctx, channel: discord.TextChannel=None):
 @bot.command(name = "Translate", description = "Translates given text to Pig Latin.\nImplementation:\n```\np! translate <text to translate>\n```", pass_context=True)
 @commands.cooldown(1, 10, commands.BucketType.guild)
 async def translate(ctx, *args):
+
+    if not args:
+        translate_embed = discord.Embed(title="Translate", color = 0x7f1085)
+        translate_embed.add_field(name='ERROR', value='Please enter text to translate. For more information about this command:\n```\np! help translate\n```')
+        await ctx.send(embed=translate_embed)
+        return
+
     ay = 'ay'
     way = 'way'
     consonant = ('B','C','D','F','G','H','J','K','L','M','N','P','Q','R','S','T','Y','V','X','Z')
