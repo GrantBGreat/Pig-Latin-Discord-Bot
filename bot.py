@@ -10,7 +10,7 @@ from discord.ext.commands import has_permissions, MissingPermissions
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
-bot = commands.Bot(command_prefix=commands.when_mentioned_or("!"), description="The ultimate bored person bot", help_command = None, case_insensitive = True)
+bot = commands.Bot(command_prefix=commands.when_mentioned_or("p! "), description="The ultimate bored person bot", help_command = None, case_insensitive = True)
 
 print("Bot is starting...")
 
@@ -30,7 +30,7 @@ async def on_ready():
 @bot.command(name="help", description = "Learn what each command does.", pass_context=True) #help command
 @commands.cooldown(1, 5, commands.BucketType.guild)
 async def help(ctx, args=None):
-    help_embed = discord.Embed(title="Stuck? Join the Support Server!", color = 0x8a3f0a, url='https://discord.gg/vhGhEsDyCf')
+    help_embed = discord.Embed(title="Help", color = 0x8a3f0a)
     command_names_list = [i.name for i in bot.commands]
 
     # If there are no arguments, just list the commands:
@@ -42,7 +42,7 @@ async def help(ctx, args=None):
         )
         help_embed.add_field(
             name="Details",
-            value="The prefix for this bot is \"`!`\" -- Remember the space between the prefix and command!\n\nType `!help <command name>` for more details about a command.",
+            value="The prefix for this bot is \"`p! `\" -- Remember the space between the prefix and command!\n\nType `!help <command name>` for more details about a command.",
             inline=False
         )
 
@@ -62,6 +62,10 @@ async def help(ctx, args=None):
 
     await ctx.send(embed=help_embed)
 
+
+@bot.command(name = "set", description = "Can be run by admins only.\n\nThis command sets the channel for Pig Latin translation\n\n**Impemetation:**\n`p! set <channel mention>", pass_context=True)
+@commands.cooldown(1, 10, commands.BucketType.guild)
+@has_permissions(administrator=True)
 
 
 ########################################CATCH-ERRORS##################################################################
