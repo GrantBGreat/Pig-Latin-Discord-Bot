@@ -90,6 +90,8 @@ async def save(ctx, channel: discord.TextChannel=None):
     else:
         print(f"guild {gid} was found in db")
 
+    conn.commit()
+
     # find channel id and check if it's valid
     try:
         if channel is None:
