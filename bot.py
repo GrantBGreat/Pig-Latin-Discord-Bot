@@ -103,6 +103,10 @@ async def save(ctx, channel: discord.TextChannel=None):
 
 
 
+    conn.commit()
+
+
+
 
 ########################################CATCH-ERRORS##################################################################
 
