@@ -137,16 +137,19 @@ async def translate(ctx, *args):
         if first_letter in consonant:
             length_of_word = len(user_word)
             remove_first_letter = user_word[1:length_of_word]
-            pig_latin=remove_first_letter+first_letter+ay
-            pig_latin_string=pig_latin_string+' '+pig_latin
+            pig_latin=remove_first_letter+first_letter.lower()+ay
         elif first_letter in vowel:
             pig_latin=user_word+way
-            pig_latin_string=pig_latin_string+' '+pig_latin
         else:
             translate_embed = discord.Embed(title="Report this!", color = 0xbd0000, url="https://github.com/GrantBGreat/Pig-Latin-Discord-Bot/issues")
             translate_embed.add_field(name="*EXTREME ERROR*\n\nThis error should not normally occur!", value=f"If you are reading this error, I would greatly appretiate it if you report it on my github by clicking the \'Report this!\' at the top of this message, or go to this link:\n```\nhttps://github.com/GrantBGreat/Pig-Latin-Discord-Bot/issues\n```\nWhen you reporting it, please include the error code below:\n{e}")
             await ctx.send(embed=translate_embed)
             return
+
+            
+            
+        pig_latin_string=pig_latin_string+' '+pig_latin
+
 
     translate_embed = discord.Embed(title="Translate", color = 0x7f1085)
     translate_embed.add_field(name="English:", value=' '.join(args))
