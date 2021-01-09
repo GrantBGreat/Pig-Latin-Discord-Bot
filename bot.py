@@ -98,6 +98,7 @@ async def save(ctx, channel: discord.TextChannel=None):
             save_embed.add_field(name="ERROR", value="Please specify a channel via mention. For more information about this command:\n```\np! help save\n```")
             await ctx.send(embed=save_embed)
             return
+            print("error occured\n")
         else:
             channel_id = channel.id
     except Exception as e:
@@ -105,6 +106,7 @@ async def save(ctx, channel: discord.TextChannel=None):
         save_embed.add_field(name="*EXTREME ERROR*\n\nThis error should not normally occur!", value=f"If you are reading this error, I would greatly appretiate it if you report it on my github by clicking the \'Report this!\' at the top of this message, or go to this link:\n```\nhttps://github.com/GrantBGreat/Pig-Latin-Discord-Bot/issues\n```\nWhen you reporting it, please include the error code below:\n{e}")
         await ctx.send(embed=save_embed)
         return
+        print("\nEXTREME ERROR!\n\n")
 
     save_embed = discord.Embed(title="Save", color = 0x7f1085)
     c.execute("UPDATE main SET channel_id = ? WHERE guild_id = ?", (channel_id, gid))
@@ -112,12 +114,14 @@ async def save(ctx, channel: discord.TextChannel=None):
     await ctx.send(embed=save_embed)
 
     conn.commit()
-    print(f"The channel id for guild {gid} has been set to {channel_id}.")
+    print(f"The channel id for guild {gid} has been set to {channel_id}.\n")
 
 
 @bot.command(name = "Translate", description = "Translates given text to Pig Latin.\nImplementation:\n```\np! translate <text to translate>\n```", pass_context=True)
 @commands.cooldown(1, 10, commands.BucketType.guild)
 async def translate(ctx, *args):
+    gid = ctx.message.guild.id
+    print(f"Translating for guild {gid}\n")
 
     if not args:
         translate_embed = discord.Embed(title="Translate", color = 0x7f1085)
@@ -148,9 +152,8 @@ async def translate(ctx, *args):
             translate_embed.add_field(name="*EXTREME ERROR*\n\nThis error should not normally occur!", value=f"If you are reading this error, I would greatly appretiate it if you report it on my github by clicking the \'Report this!\' at the top of this message, or go to this link:\n```\nhttps://github.com/GrantBGreat/Pig-Latin-Discord-Bot/issues\n```\nWhen you reporting it, please include the error code below:\n{e}")
             await ctx.send(embed=translate_embed)
             return
-
-            
-            
+            print("EXTREME ERROR!\n\n")
+     
         pig_latin_string=pig_latin_string+' '+pig_latin
 
 
@@ -158,6 +161,57 @@ async def translate(ctx, *args):
     translate_embed.add_field(name="English:", value=' '.join(args))
     translate_embed.add_field(name="Pig Latin:", value=pig_latin_string[1:len(pig_latin_string)])
     await ctx.send(embed=translate_embed)
+
+
+@bot.event
+async def on_message(message):
+    # check if its the bot itself
+    if message.author == bot.user:
+        return
+
+    # db checks:
+    gid = message.guild.id
+    c.execute("SELECT * FROM main WHERE guild_id=?", (gid,))
+    result = c.fetchone()
+    if result is None: # check if the guild has been set up
+        return
+    if result[1] != message.channel.id: # check if its the correct channel
+        return
+
+    # check if there is actually any content in the message (basically a failsafe to prevent trolls)
+    if message is None or message == '':
+        return
+
+    ay = 'ay'
+    way = 'way'
+    consonant = ('B','C','D','F','G','H','J','K','L','M','N','P','Q','R','S','T','Y','V','X','Z')
+    vowel = ('A','E','I','O','U')
+    pig_latin_string =''
+    args = message.content.split()
+
+    for user_word in args:
+        # getting first letter and making sure its a string and setting it to uppercase
+        first_letter = user_word[0]
+        first_letter = str(first_letter)
+        first_letter=first_letter.upper()
+
+        if first_letter in consonant:
+            length_of_word = len(user_word)
+            remove_first_letter = user_word[1:length_of_word]
+            pig_latin=remove_first_letter+first_letter.lower()+ay
+        elif first_letter in vowel:
+            pig_latin=user_word+way
+        else:
+            translate_embed = discord.Embed(title="Report this!", color = 0xbd0000, url="https://github.com/GrantBGreat/Pig-Latin-Discord-Bot/issues")
+            translate_embed.add_field(name="*EXTREME ERROR*\n\nThis error should not normally occur!", value=f"If you are reading this error, I would greatly appretiate it if you report it on my github by clicking the \'Report this!\' at the top of this message, or go to this link:\n```\nhttps://github.com/GrantBGreat/Pig-Latin-Discord-Bot/issues\n```\nWhen you reporting it, please include the error code below:\n{e}")
+            await ctx.send(embed=translate_embed)
+            return
+            print("\nEXTREME ERROR!\n\n")
+
+        pig_latin_string=pig_latin_string+' '+pig_latin
+
+    await message.channel.send(pig_latin_string)
+    await message.delete()
 
 
 ########################################CATCH-ERRORS##################################################################
@@ -173,6 +227,7 @@ async def save_error(ctx, error):
         error_embed = discord.Embed(title="ERROR", color = 0x7f1085)
         error_embed.add_field(name='Invalid channel', value=f"{error}\nPlease specify a channel via mention. For more information about this command:\n```\np! help save\n```")
         await ctx.send(embed=error_embed)
+        print("error occured\n")
 
 @bot.event
 async def on_command_error(ctx, error):
