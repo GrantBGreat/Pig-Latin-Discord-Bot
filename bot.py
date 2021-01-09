@@ -108,8 +108,11 @@ async def save(ctx, channel: discord.TextChannel=None):
 
     save_embed = discord.Embed(title="Save", color = 0x7f1085)
     c.execute("UPDATE main SET channel_id = ? WHERE guild_id = ?", (channel_id, gid))
+    save_embed.add_field(name="Channel Set", value=f"The channel with the id `{channel_id}`` has been saved to the bots database. All messages in that channel will now be translated to Pig Latin.")
+    await ctx.send(embed=save_embed)
+
     conn.commit()
-    print(channel_id)
+    print(f"The channel id for guild {gid} has been set to {channel_id}.")
 
 
 @bot.command(name = "Translate", description = "Translates given text to Pig Latin.\nImplementation:\n```\np! translate <text to translate>\n```", pass_context=True)
