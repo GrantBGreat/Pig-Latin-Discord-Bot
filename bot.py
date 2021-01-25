@@ -165,6 +165,9 @@ async def translate(ctx, *args):
 
 @bot.event
 async def on_message(message):
+    nick = message.author.display_name
+    pfp = author.avatar_url
+
     # check if its the bot itself
     if message.author == bot.user:
         return
