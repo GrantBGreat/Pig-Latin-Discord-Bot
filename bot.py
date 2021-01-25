@@ -6,6 +6,7 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 from discord import Member
+from discord import Webhook, RequestsWebhookAdapter, File
 from discord.ext.commands import has_permissions, MissingPermissions
 
 load_dotenv()
@@ -114,7 +115,7 @@ async def save(ctx, channel: discord.TextChannel=None):
     await ctx.send(embed=save_embed)
 
     #create the webhook
-    await channel.create_webhook(name="PigSpeak")
+    webhook = await channel.create_webhook(name="PigSpeak")
 
     conn.commit()
     print(f"The channel id for guild {gid} has been set to {channel_id}.\n")
