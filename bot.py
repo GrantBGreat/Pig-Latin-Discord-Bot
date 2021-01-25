@@ -113,6 +113,9 @@ async def save(ctx, channel: discord.TextChannel=None):
     save_embed.add_field(name="Channel Set", value=f"The channel with the id `{channel_id}`` has been saved to the bots database. All messages in that channel will now be translated to Pig Latin.")
     await ctx.send(embed=save_embed)
 
+    #create the webhook
+    await channel.create_webhook(name="PigSpeak")
+
     conn.commit()
     print(f"The channel id for guild {gid} has been set to {channel_id}.\n")
 
@@ -166,10 +169,11 @@ async def translate(ctx, *args):
 @bot.event
 async def on_message(message):
     nick = message.author.display_name
-    pfp = author.avatar_url
+    pfp = message.author.avatar_url
 
     # check if its the bot itself
     if message.author == bot.user:
+        await bot.process_commands(message)
         return
 
     # db checks:
@@ -177,12 +181,15 @@ async def on_message(message):
     c.execute("SELECT * FROM main WHERE guild_id=?", (gid,))
     result = c.fetchone()
     if result is None: # check if the guild has been set up
+        await bot.process_commands(message)
         return
     if result[1] != message.channel.id: # check if its the correct channel
+        await bot.process_commands(message)
         return
 
     # check if there is actually any content in the message (basically a failsafe to prevent trolls)
     if message is None or message == '':
+        await bot.process_commands(message)
         return
 
     ay = 'ay'
