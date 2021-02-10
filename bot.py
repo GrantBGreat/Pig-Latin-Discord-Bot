@@ -156,7 +156,7 @@ async def translate(ctx, *args):
             translate_embed.add_field(name="*EXTREME ERROR*\n\nThis error should not normally occur!", value=f"If you are reading this error, I would greatly appretiate it if you report it on my github by clicking the \'Report this!\' at the top of this message, or go to this link:\n```\nhttps://github.com/GrantBGreat/Pig-Latin-Discord-Bot/issues\n```\nWhen you reporting it, please include the error code below:\n{e}")
             await ctx.send(embed=translate_embed)
             return
-            print("EXTREME ERROR!\n\n")
+            print("\nEXTREME ERROR!\n\n")
      
         pig_latin_string=pig_latin_string+' '+pig_latin
 
