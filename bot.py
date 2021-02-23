@@ -172,7 +172,7 @@ async def on_message(message):
     nick = message.author.display_name
     pfp = message.author.avatar_url
 
-    # check if its the bot itself
+    # check if the message is from the bot itself
     if message.author == bot.user:
         await bot.process_commands(message)
         return
@@ -193,36 +193,45 @@ async def on_message(message):
         await bot.process_commands(message)
         return
 
+    try:
+        pig_latin_string = await toPiglatin(message.content.split())
+    except Exception as e:
+        print(e)
+
+
+    await message.channel.send(pig_latin_string)
+    await message.delete()
+
+
+########################################FUNCTIONS#####################################################################
+
+async def toPiglatin(args):
     ay = 'ay'
     way = 'way'
-    consonant = ('B','C','D','F','G','H','J','K','L','M','N','P','Q','R','S','T','Y','V','X','Z')
     vowel = ('A','E','I','O','U')
     pig_latin_string =''
-    args = message.content.split()
+    pig_latin = ''
 
     for user_word in args:
         # getting first letter and making sure its a string and setting it to uppercase
         first_letter = user_word[0]
         first_letter = str(first_letter)
-        first_letter=first_letter.upper()
+        first_letter=first_letter.upper
 
-        if first_letter in consonant:
+        if first_letter in vowel:
+            pig_latin=user_word+way
+        else:
             length_of_word = len(user_word)
             remove_first_letter = user_word[1:length_of_word]
             pig_latin=remove_first_letter+first_letter.lower()+ay
-        elif first_letter in vowel:
-            pig_latin=user_word+way
-        else:
-            translate_embed = discord.Embed(title="Report this!", color = 0xbd0000, url="https://github.com/GrantBGreat/Pig-Latin-Discord-Bot/issues")
-            translate_embed.add_field(name="*EXTREME ERROR*\n\nThis error should not normally occur!", value=f"If you are reading this error, I would greatly appretiate it if you report it on my github by clicking the \'Report this!\' at the top of this message, or go to this link:\n```\nhttps://github.com/GrantBGreat/Pig-Latin-Discord-Bot/issues\n```\nWhen you reporting it, please include the error code below:\n{e}")
-            await ctx.send(embed=translate_embed)
-            return
-            print("\nEXTREME ERROR!\n\n")
 
-        pig_latin_string=pig_latin_string+' '+pig_latin
 
-    await message.channel.send(pig_latin_string)
-    await message.delete()
+        pig_latin_string=pig_latin_string+' '+pig_latin   
+         
+    try:
+        return pig_latin_string
+    except Exception as e:
+        print(e)
 
 
 ########################################CATCH-ERRORS##################################################################
